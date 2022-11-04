@@ -1,0 +1,34 @@
+-hosts: all
+ tasks:
+ -name: create directory
+  file:
+    path: /etc/newrelic-java
+	state: directory
+	  
+- name: download and Extract newrelic-java.zip
+  ansible.builtin.unarchive:
+    src: https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip
+    dest: /etc/newrelic-java
+    remote_src: yes
+
+-name: remove newrelic subdirectory
+ file:
+    state: absent
+	path: /etc/newrelic-java/newrelic
+	
+-name: remove newrelic yml file
+ file:
+    state: absent
+	path: /etc/newrelic-java/newrelic.yml
+	
+-name: create ops newrelic yml file
+ tasks:
+ copy:
+   dest: "/etc/newrelic-java"
+   content: content goes here
+   
+  - name: restart service-name service
+  ansible.builtin.systemd:
+    state: restarted
+	daemon_reload: yes
+	name: env-service
