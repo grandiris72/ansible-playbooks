@@ -1,9 +1,9 @@
 -hosts: all
 tasks:
 -name: create directory
- file:
- path: /etc/newrelic-java
-state: directory
+  file:
+  path: /etc/newrelic-java
+  state: directory
 	  
 - name: download and Extract newrelic-java.zip
   ansible.builtin.unarchive:
