@@ -1,0 +1,14 @@
+- name: Ansible create ec2 instance
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Provision instance
+      amazon.aws.ec2_instance:
+       name: ansibledemo
+       aws_access_key: "insert aws access key"
+       aws_secret_key: "insert aws secret key"
+       wait: yes
+       instance_type: t2.micro
+       image_id: ami-0b854ee84fb0b9c6a
+       region: us-east-1
+       exact_count: 1
