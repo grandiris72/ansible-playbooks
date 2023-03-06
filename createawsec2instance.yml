@@ -4,11 +4,23 @@
   tasks:
     - name: Provision instance
       amazon.aws.ec2_instance:
-       name: ansibledemo
-       aws_access_key: "insert aws access key"
-       aws_secret_key: "insert aws secret key"
+       name: newrelicdemo
+       aws_access_key: "12345"
+       aws_secret_key: "678910"
        wait: yes
+       key_name: testlab
        instance_type: t2.micro
-       image_id: ami-0b854ee84fb0b9c6a
        region: us-east-1
        exact_count: 1
+       launch_template:
+         #name: ansible
+        version: 5
+        id: lt-0e0426ff573a09401
+     #ImageId: ami-0b854ee84fb0b9c6a
+
+- hosts: localhost
+  roles:
+    - role: newrelic.newrelic-infra
+      vars:
+        nrinfragent_config:
+          license_key: YOUR_LICENSE_KEY
