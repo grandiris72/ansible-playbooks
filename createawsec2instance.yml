@@ -1,5 +1,17 @@
 ---
 
+
+- name: Create new host group
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Add new group to inventory
+      lineinfile:
+        path: /etc/ansible/hosts
+        line: temp_aws_standup
+
+
+
 - name: Ansible create ec2 instance
   hosts: localhost
   become: yes
@@ -7,22 +19,42 @@
     - name: Provision instance
       amazon.aws.ec2_instance:
        name: newrelicdemo
-       aws_access_key: "12345"
-       aws_secret_key: "123456"
+       aws_access_key: "AKIAY2BFXVI4NFM3VG5P"
+       aws_secret_key: "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"
        wait: yes
        key_name: testlab
        instance_type: t2.micro
        region: us-east-1
        exact_count: 1
        launch_template:
-         #name: ansible
+       #name: ansible
         version: 5
         id: lt-0e0426ff573a09401
         wait: yes
-     #ImageId: ami-0b854ee84fb0b9c6a
+     #ImageId: ami-0b854ee84fb0b9c6ai
 
 
-- hosts: localhost
+          #- name: Pause for 4 minutes to let aws launch node
+          #ansible.builtin.pause:
+          #minutes: 4
+- name: Add EC2 instance to Ansible
+  become: yes
+  hosts: temp_aws_standup
+  tasks:
+    - name: Add new instance to host group
+      become: yes
+      ansible.builtin.add_host:
+        hostname:  '{{ ip_from_ec2 }}'
+        groupname: temp_aws_standup
+
+          #- name: Wait for SSH to come up
+          #ansible.builtin.wait_for:
+          #host: "{{ item.public_dns_name }}"
+          #port: 22
+          #state: started
+
+- name: update apt packages
+  hosts: temp_aws_standup
   become: yes
   tasks:
     - name: Update apt packages
@@ -34,9 +66,20 @@
         name: "*"
         state: latest
 
-- hosts: localhost
+- name: install newrelic agent
+  hosts: temp_aws_standup
+  remote_user: ubuntu
+  become: yes
   roles:
     - role: newrelic.newrelic-infra
       vars:
         nrinfragent_config:
-          license_key: YOUR_LICENSE_KEY
+          license_key: INSERTKEY
+          log_file: /var/log/newrelic-infra.log
+          log_forward: false
+          verbose: 0
+          metrics_network_sample_rate: 60
+          metrics_storage_sample_rate: 300
+          metrics_system_sample_rate: 30
+          metrics_nfs_sample_rate: -1
+          metrics_process_sample_rate: -1
