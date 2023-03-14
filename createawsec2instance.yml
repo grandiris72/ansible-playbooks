@@ -1,60 +1,46 @@
 ---
 
 
-- name: Create new host group
-  hosts: localhost
-  become: true
-  tasks:
-    - name: Add new group to inventory
-      lineinfile:
-        path: /etc/ansible/hosts
-        line: temp_aws_standup
+#- name: Create new host group
+#  hosts: localhost
+#  become: true
+#  tasks:
+#    - name: Add new group to inventory
+#      lineinfile:
+#        path: /home/ubuntu/aws_ec2.yaml
+#        line: ['aws_ec2']
 
 
 
 - name: Ansible create ec2 instance
   hosts: localhost
+  vars:
+    hostname: "{{ hostname }}"
   become: yes
   tasks:
     - name: Provision instance
       amazon.aws.ec2_instance:
-       name: newrelicdemo
-       aws_access_key: "AKIAY2BFXVI4NFM3VG5P"
-       aws_secret_key: "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"
-       wait: yes
-       key_name: testlab
+       name: newservertest
+       aws_access_key: "AKIAY2BFXVI4AHCPZAUG"
+       aws_secret_key: "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"
+       key_name: "ansible"
+         #ImageId: ami-0b854ee84fb0b9c6a
        instance_type: t2.micro
        region: us-east-1
        exact_count: 1
        launch_template:
-       #name: ansible
-        version: 5
+        version: 8
         id: lt-0e0426ff573a09401
-        wait: yes
-     #ImageId: ami-0b854ee84fb0b9c6ai
+       wait: yes
 
-
-          #- name: Pause for 4 minutes to let aws launch node
-          #ansible.builtin.pause:
-          #minutes: 4
-- name: Add EC2 instance to Ansible
-  become: yes
-  hosts: temp_aws_standup
-  tasks:
-    - name: Add new instance to host group
-      become: yes
-      ansible.builtin.add_host:
-        hostname:  '{{ ip_from_ec2 }}'
-        groupname: temp_aws_standup
-
-          #- name: Wait for SSH to come up
-          #ansible.builtin.wait_for:
-          #host: "{{ item.public_dns_name }}"
-          #port: 22
-          #state: started
+# - name: Install botocore and boto3 using specific version
+#  ansible.builtin.pip:
+#   name: botocore
+#   name: boto3
+#   executable: pip22.0.2
 
 - name: update apt packages
-  hosts: temp_aws_standup
+  hosts: ['aws_ec2']
   become: yes
   tasks:
     - name: Update apt packages
@@ -67,8 +53,8 @@
         state: latest
 
 - name: install newrelic agent
-  hosts: temp_aws_standup
-  remote_user: ubuntu
+  hosts: ['aws_ec2']
+    #remote_user: ubuntu
   become: yes
   roles:
     - role: newrelic.newrelic-infra
