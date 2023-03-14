@@ -21,8 +21,8 @@
     - name: Provision instance
       amazon.aws.ec2_instance:
        name: newservertest
-       aws_access_key: "AKIAY2BFXVI4AHCPZAUG"
-       aws_secret_key: "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"
+       aws_access_key: "INSERTKEY"
+       aws_secret_key: "INSERTKEY"
        key_name: "ansible"
          #ImageId: ami-0b854ee84fb0b9c6a
        instance_type: t2.micro
