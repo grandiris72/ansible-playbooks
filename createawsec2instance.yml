@@ -13,10 +13,12 @@
 
 
 - name: Ansible create ec2 instance
-  hosts: localhost
-  vars:
-    hostname: "{{ hostname }}"
+  hosts: ['localhost']
   become: yes
+  vars_prompt:
+    - name: "servername"
+      prompt: "Name the server"
+      confirm: true
   tasks:
     - name: Provision instance
       amazon.aws.ec2_instance:
