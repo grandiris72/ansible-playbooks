@@ -19,6 +19,10 @@
     - name: "servername"
       prompt: "Name the server"
       confirm: true
+    - name: "servertype"
+      prompt: "What ec2 type? ex t2.micro"
+      confirm: true
+      private: false
   tasks:
     - name: Provision instance
       amazon.aws.ec2_instance:
@@ -27,7 +31,7 @@
        aws_secret_key: "INSERTKEY"
        key_name: "ansible"
          #ImageId: ami-0b854ee84fb0b9c6a
-       instance_type: t2.micro
+       instance_type: "{{ servertype }}"
        region: us-east-1
        exact_count: 1
        launch_template:
