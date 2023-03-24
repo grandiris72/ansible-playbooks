@@ -10,8 +10,6 @@
 #        path: /home/ubuntu/aws_ec2.yaml
 #        line: ['aws_ec2']
 
-
-
 - name: Ansible create ec2 instance
   hosts: ['localhost']
   become: yes
@@ -19,6 +17,7 @@
     - name: "servername"
       prompt: "Name the server"
       confirm: true
+      private: false
     - name: "servertype"
       prompt: "What ec2 type? ex t2.micro"
       confirm: true
@@ -26,11 +25,11 @@
   tasks:
     - name: Provision instance
       amazon.aws.ec2_instance:
-       name: newservertest
-       aws_access_key: "INSERTKEY"
+       name: "{{ servername }}"
+       aws_access_key: "INSERTKEY
        aws_secret_key: "INSERTKEY"
        key_name: "ansible"
-         #ImageId: ami-0b854ee84fb0b9c6a
+         #ImageId: 
        instance_type: "{{ servertype }}"
        region: us-east-1
        exact_count: 1
@@ -38,14 +37,8 @@
         version: 8
         id: lt-0e0426ff573a09401
        wait: yes
-
-# - name: Install botocore and boto3 using specific version
-#  ansible.builtin.pip:
-#   name: botocore
-#   name: boto3
-#   executable: pip22.0.2
-
-- name: update apt packages
+       
+       - name: update apt packages
   hosts: ['aws_ec2']
   become: yes
   tasks:
@@ -57,21 +50,21 @@
       apt:
         name: "*"
         state: latest
-
+        
 - name: install newrelic agent
   hosts: ['aws_ec2']
     #remote_user: ubuntu
   become: yes
   roles:
-    - role: newrelic.newrelic-infra
-      vars:
-        nrinfragent_config:
-          license_key: INSERTKEY
-          log_file: /var/log/newrelic-infra.log
-          log_forward: false
-          verbose: 0
-          metrics_network_sample_rate: 60
-          metrics_storage_sample_rate: 300
-          metrics_system_sample_rate: 30
-          metrics_nfs_sample_rate: -1
-          metrics_process_sample_rate: -1
+   - role: newrelic.newrelic-infra
+     vars:
+       nrinfragent_config:
+         license_key: INSERTKEY
+         log_file: /var/log/newrelic-infra.log
+         log_forward: false
+         verbose: 0
+         metrics_network_sample_rate: 60
+         metrics_storage_sample_rate: 300
+         metrics_system_sample_rate: 30
+         metrics_nfs_sample_rate: -1
+         metrics_process_sample_rate: -1
