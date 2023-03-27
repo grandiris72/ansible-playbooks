@@ -17,8 +17,8 @@
     - name: Provision instance
       amazon.aws.ec2_instance:
        name: "{{ servername }}"
-       aws_access_key: "AKIAY2BFXVI4ABRXDMMS"
-       aws_secret_key: "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"
+       aws_access_key: "INSERTKEY"
+       aws_secret_key: "INSERTKEY"
        key_name: "ansible"
          #ImageId: ami-0b854ee84fb0b9c6a
        instance_type: "{{ servertype }}"
