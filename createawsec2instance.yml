@@ -1,35 +1,26 @@
 ---
 
 
-#- name: Create new host group
-#  hosts: localhost
-#  become: true
-#  tasks:
-#    - name: Add new group to inventory
-#      lineinfile:
-#        path: /home/ubuntu/aws_ec2.yaml
-#        line: ['aws_ec2']
-
 - name: Ansible create ec2 instance
   hosts: ['localhost']
   become: yes
   vars_prompt:
     - name: "servername"
       prompt: "Name the server"
-      confirm: true
+      confirm: false
       private: false
     - name: "servertype"
       prompt: "What ec2 type? ex t2.micro"
-      confirm: true
+      confirm: false
       private: false
   tasks:
     - name: Provision instance
       amazon.aws.ec2_instance:
        name: "{{ servername }}"
-       aws_access_key: "INSERTKEY
-       aws_secret_key: "INSERTKEY"
+       aws_access_key: "AKIAY2BFXVI4ABRXDMMS"
+       aws_secret_key: "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"
        key_name: "ansible"
-         #ImageId: 
+         #ImageId: ami-0b854ee84fb0b9c6a
        instance_type: "{{ servertype }}"
        region: us-east-1
        exact_count: 1
@@ -37,11 +28,17 @@
         version: 8
         id: lt-0e0426ff573a09401
        wait: yes
-       
-       - name: update apt packages
+
+
+- name: update apt packages
   hosts: ['aws_ec2']
   become: yes
   tasks:
+    - name: Wait for system to become reachable
+      ansible.builtin.wait_for_connection:
+        delay: 60
+        timeout: 300
+    - meta: refresh_inventory
     - name: Update apt packages
       apt:
        update_cache: yes
@@ -50,10 +47,9 @@
       apt:
         name: "*"
         state: latest
-        
+
 - name: install newrelic agent
   hosts: ['aws_ec2']
-    #remote_user: ubuntu
   become: yes
   roles:
    - role: newrelic.newrelic-infra
