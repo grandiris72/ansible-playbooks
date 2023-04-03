@@ -3,7 +3,7 @@
 
 - name: Ansible create ec2 instance
   hosts: ['localhost']
-  become: yes
+  #become: yes
   vars_prompt:
     - name: "servername"
       prompt: "Name the server"
