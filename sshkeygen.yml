@@ -1,0 +1,11 @@
+- name: Generate ssh key
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: generate ssh key
+    community.crypto.openssh_keypair:
+      path: /path/to/file/filename
+      type: rsa
+      size: 4096
+      state: present
+      force: no
