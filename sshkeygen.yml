@@ -1,10 +1,20 @@
 - name: Generate ssh key
   hosts: localhost
   connection: local
+  become: yes
+  vars_prompt:
+  - name: "keypath"
+    prompt: "Enter ssh key path"
+    private: false
+    unsafe: true
+  - name: "keyname"
+    prompt: "Enter ssh key name without extension"
+    private: false
   tasks:
   - name: generate ssh key
     community.crypto.openssh_keypair:
-      path: /path/to/file/filename
+      #path: ' "{{ keypath }}""{{ keyname }}" '
+      path: '{{ keypath }}/{{ keyname }}'
       type: rsa
       size: 4096
       state: present
