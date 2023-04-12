@@ -19,3 +19,8 @@
       size: 4096
       state: present
       force: no
+  - name: Set authorized key taken from file
+    authorized_key:
+      user: "{{ keyname }}"
+      state: present
+      key: "{{ lookup('file', '{{ keypath }}/{{ keyname }}.pub') }}"
